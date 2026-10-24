@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DrKsir 远程文章池 · 部署自检</title>
+<style>
+  body{font:15px/1.6 system-ui,'Segoe UI',sans-serif;margin:0;background:#0f1115;color:#e8eaed;padding:32px}
+  h1{font-size:20px;margin:0 0 4px}
+  .ok{color:#3ddc84}.bad{color:#ff6b6b}
+  .meta{color:#9aa0a6;font-size:13px;margin-bottom:18px}
+  ol{margin:8px 0;padding-left:20px}
+  li{margin:3px 0}
+  a{color:#8ab4f8}
+  code{background:#1b1f27;padding:1px 6px;border-radius:4px;color:#ffd479}
+</style>
+</head>
+<body>
+  <h1>DrKsir 远程文章池 · 部署自检</h1>
+  <div class="meta">本页仅用于确认三件套已正确托管并被加载。</div>
+  <div id="status">正在加载 er_list.js …</div>
+  <div id="list"></div>
+
+  <script src="er_list.js"></script>
+  <script src="er_pool.js"></script>
+  <script>
+    (function(){
+      var s=document.getElementById('status'), l=document.getElementById('list');
+      if(!window.ER_LIST||!window.ER_POOL){
+        s.innerHTML='<span class="bad">✗ 数据未加载</span> —— 请确认 er_list.js / er_pool.js 与本页同目录且可公开访问。';
+        return;
+      }
+      s.innerHTML='<span class="ok">✓ 已加载</span> · 文章 '+ER_LIST.length+' 篇 · 正文池 '+Object.keys(ER_POOL).length+' 篇';
+      var ol='<ol>';
+      ER_LIST.slice(0,10).forEach(function(a){ ol+='<li><a href="erRemoteJs.js">'+a.title+'</a> <span class="meta">'+a.date+' · '+a.cat+'</span></li>'; });
+      ol+='</ol>';
+      l.innerHTML=ol;
+    })();
+  </script>
+</body>
+</html>
