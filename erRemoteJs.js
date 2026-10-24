@@ -61,7 +61,14 @@
 
   function boot() {
     var listBox = document.querySelector('.nd-list');
-    if (!listBox) return;                       // 非行业动态页 → 不改 v80
+    if (!listBox) {
+      /* 轮询等待 v80 的 erPoolArtJs 异步渲染出 .nd-list（最多 ~5s）；
+         文档加载完仍无 → 非行业动态页或残壳，保持 v80 不变，安全退出。 */
+      if (document.readyState === 'complete') return;
+      if ((boot._tries = (boot._tries || 0) + 1) < 50) { setTimeout(boot, 100); return; }
+      return;
+    }
+    boot._tries = 0;
     document.body.classList.add('er-remote');   // 先隐藏 v80，避免双显
     injectStyle();
 
@@ -202,7 +209,5 @@
     onHash();
   }
 
-  if (document.readyState === 'loading')
-    document.addEventListener('DOMContentLoaded', boot);
-  else boot();
+  boot();
 })();
